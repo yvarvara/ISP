@@ -11,19 +11,14 @@ class TypeGame(Enum):
     HARD = 2    
 
 
-class Page(Frame):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-
-class DrawingPage(Page):
+class DrawingPage():
     SCALE = 1
     SCALE_MAX = 5
     SCALE_MIN = 1
     ERROR_MAX = 10
 
-    def __init__(self, root, pixelation, type_game, *args, **kwargs):
-        Page.__init__(self, *args, **kwargs)
+    def __init__(self, root, pixelation, type_game):
+
         self.root = root
 
         self.type_game = type_game
