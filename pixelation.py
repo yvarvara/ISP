@@ -6,7 +6,7 @@ from sklearn.cluster import KMeans
 import numpy as np
 
 
-class TypePixelation(Enum):
+class PixelationType(Enum):
     K_AVERAGE_RANDOM_POINT = 1
     K_AVERAGE_POPULAR_POINT = 2
     NEURAL_NETWORK = 3
@@ -17,13 +17,13 @@ class Pixelation:
     # static settings
     NUMBER_ITERATION = 5
 
-    def __init__(self, file_path, size_block, number_colors, type_pixelation):
-        if type(type_pixelation) is int:
-            type_pixelation = TypePixelation(type_pixelation)
+    def __init__(self, file_path, size_block, number_colors, pixelation_type):
+        if type(pixelation_type) is int:
+            pixelation_type = PixelationType(pixelation_type)
 
         self.size_block = size_block
         self.number_colors = number_colors
-        self.type = type_pixelation
+        self.type = pixelation_type
 
         self.image = Image.open(file_path)
         self.pixels = self.image.load()
@@ -121,7 +121,7 @@ class Pixelation:
         return colors
 
     def _solve_k_average(self):
-        if self.type == TypePixelation.K_AVERAGE_POPULAR_POINT:
+        if self.type == PixelationType.K_AVERAGE_POPULAR_POINT:
             center_points = self._get_k_most_popular_color(self._get_all_colors(), self.number_colors)
         else:
             center_points = []
@@ -169,9 +169,9 @@ class Pixelation:
 
     def process_image(self):
         self._break_into_blocks()
-        if self.type == TypePixelation.K_AVERAGE_POPULAR_POINT or self.type == TypePixelation.K_AVERAGE_RANDOM_POINT:
+        if self.type == PixelationType.K_AVERAGE_POPULAR_POINT or self.type == PixelationType.K_AVERAGE_RANDOM_POINT:
             self._solve_k_average()
-        if self.type == TypePixelation.NEURAL_NETWORK:
+        if self.type == PixelationType.NEURAL_NETWORK:
             self._solve_neural_network()
 
     def save_result(self, path_to_output_file):

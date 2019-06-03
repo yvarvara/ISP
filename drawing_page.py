@@ -1,11 +1,11 @@
 from enum import Enum
 from tkinter import *
 from tkinter import ttk
-
+import numpy
 from colors import ColorsMethods
 
 
-class TypeGame(Enum):
+class GameType(Enum):
     CLASSIC = 0
     EASY = 1  
     HARD = 2    
@@ -17,11 +17,11 @@ class DrawingPage():
     SCALE_MIN = 1
     ERROR_MAX = 10
 
-    def __init__(self, root, pixelation, type_game):
+    def __init__(self, root, pixelation, game_type):
 
         self.root = root
 
-        self.type_game = type_game
+        self.game_type = game_type
         self.size_block = pixelation.size_block
         self.color_number = len(pixelation.get_colors())
         self.colors = pixelation.get_colors()
@@ -105,6 +105,8 @@ class DrawingPage():
         interior = Frame(c, bg='#f2f2f2')
         c.create_window(0, 0, window=interior, anchor=NW)
 
+        self.prev_button = Button()
+
         for i in range(1, self.color_number + 1):
             color = self.colors[i - 1]
             inversed_color = ColorsMethods.color_inverse(color)
@@ -112,8 +114,7 @@ class DrawingPage():
             btn = Button(interior, width=2, text=str(i), font=('Purisa', '12', 'bold'), height=1,
                          background=color, foreground=inversed_color, bd=3)
             if i == 1:
-                btn['relief'] = SUNKEN
-                self.prev_button = btn
+                self.set_current_color(btn)
 
             btn.config(command=lambda button=btn: self.set_current_color(button))
             btn.grid(column=i - 1, row=0, padx=5, pady=5)
@@ -127,14 +128,15 @@ class DrawingPage():
             return
 
         if ColorsMethods.rgb_to_hex(*self.pixels[x_click / self.SCALE, y_click / self.SCALE]) != self.current_color:
-            if self.type_game == TypeGame.HARD:
+            if self.game_type == GameType.HARD:
                 self.error_clicks += 1
                 if self.error_clicks == self.ERROR_MAX:
-                    DrawingPage(Toplevel(), self.pixelation, TypeGame.HARD)
+                    DrawingPage(Toplevel(), self.pixelation, GameType.HARD)
                     self.root.destroy()
             return
 
-        self.is_draw[int(int(x_click / self.SCALE + 0.00001) // size_block)][int(int(y_click / self.SCALE + 0.00001) // size_block)] = 1
+        self.is_draw[int(int(x_click / self.SCALE + 0.00001) // size_block)][int(int(y_click / self.SCALE + 0.00001)
+                                                                                 // size_block)] = 1
 
         x = x_click // size_block * size_block
         y = y_click // size_block * size_block
@@ -142,11 +144,31 @@ class DrawingPage():
         self.canvas.create_rectangle(x, y, x + size_block, y + size_block,
                                      fill=self.current_color, outline=self.current_color)
 
+    def show_current_color_blocks(self, number):
+
+        self.canvas.delete('hint')
+
+        size_block = self.size_block * self.SCALE
+        for x in numpy.arange(1, self.width * self.SCALE, size_block):
+            for y in numpy.arange(1, self.height * self.SCALE, size_block):
+                if ColorsMethods.rgb_to_hex(*self.pixels[x / self.SCALE, y / self.SCALE])\
+                        == self.current_color:
+                    x1 = x // size_block * size_block
+                    y1 = y // size_block * size_block
+
+                    self.canvas.create_rectangle(x1, y1, x1 + size_block, y1 + size_block,
+                                                 fill='#f7ffdd', tags='hint')
+                    self.canvas.create_text(x1 + size_block // 2, y1 + size_block // 2,
+                                            text=number, font=("Purisa", int(self.text_size)),
+                                            tags=('hint', 'color_num'))
+
     def set_current_color(self, button):
         self.current_color = button['bg']
 
-        self.prev_button['relief'] = RAISED
+        if self.game_type == GameType.EASY:
+            self.show_current_color_blocks(button['text'])
 
+        self.prev_button['relief'] = RAISED
         button['relief'] = SUNKEN
         self.prev_button = button
 

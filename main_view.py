@@ -8,10 +8,10 @@ class MainView():
 
         self.root = root
 
-        button = Button(root, text="New picture", command=self.new_window)
-        button.pack()
+        button = Button(root, text="New picture", command=self.new_picture_click)
+        button.grid(column=0, row=0)
 
-    def new_window(self):
+    def new_picture_click(self):
         file_path = askopenfilename()
         NewPicturePage(Toplevel(), file_path)
 
