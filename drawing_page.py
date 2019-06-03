@@ -157,7 +157,7 @@ class DrawingPage():
                     y1 = y // size_block * size_block
 
                     self.canvas.create_rectangle(x1, y1, x1 + size_block, y1 + size_block,
-                                                 fill='#f7ffdd', tags='hint')
+                                                 fill='#e5efff', tags='hint')
                     self.canvas.create_text(x1 + size_block // 2, y1 + size_block // 2,
                                             text=number, font=("Purisa", int(self.text_size)),
                                             tags=('hint', 'color_num'))
