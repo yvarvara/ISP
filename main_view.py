@@ -8,7 +8,7 @@ class MainView():
     def __init__(self, root):
 
         self.root = root
-        button1 = Button(root, text="Settings", bg='#fafafa', command=self.new_picture_click)
+        button1 = Button(root, text="Settings", bg='#fafafa')
         button1.grid(column=1, row=0, pady=20, padx=20)
         button2 = Button(root, text="New picture", bg='#fafafa', command=self.new_picture_click)
         button2.grid(column=1, row=0, pady=20, padx=20, sticky=E)
