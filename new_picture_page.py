@@ -7,10 +7,12 @@ from drawing_page import DrawingPage, GameType
 
 
 class NewPicturePage():
-    def __init__(self, root, file_path):
+    def __init__(self, root, file_path, type_game):
         self.file_path = file_path
         self.root = root
         self.root['bg'] = '#006064'
+
+        self.type_game = GameType(type_game)
 
         style = ttk.Style()
         style.configure('Style.TRadiobutton', background='#fafafa')
@@ -89,7 +91,7 @@ class NewPicturePage():
         self.update_image()
 
     def on_click_button(self):
-        DrawingPage(Toplevel(), self.pixelation, GameType.EASY)
+        DrawingPage(Toplevel(), self.pixelation, self.type_game)
         self.root.destroy()
 
     def selected(self, *args):
